@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capybara Chill</title>
+    <meta name="description" content="Summon a chill capybara to calm your day">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <div class="caption caption-top" id="caption-top"></div>
+            <img id="capybara-image" src="" alt="A chill capybara">
+            <div class="caption caption-bottom" id="caption-bottom"></div>
+        </div>
+
+        <div class="controls">
+            <button id="chill-btn" onclick="summonCapybara()" aria-label="Summon another chill capybara">
+                <span class="btn-icon" aria-hidden="true">~</span>
+                summon another chill capybara
+                <span class="btn-icon" aria-hidden="true">~</span>
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>take a deep breath. everything is okay.</p>
+        <p class="credit">inspired by <a href="https://calmingmanatee.xyz/" target="_blank" rel="noopener">calmingmanatee.xyz</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
