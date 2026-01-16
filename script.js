@@ -85,13 +85,12 @@ function addToHistory(index, historyArray) {
 }
 
 // Split caption into top and bottom parts for meme format
-// Always splits into two lines - top and bottom of image
+// Splits when there's a natural break or when caption is long enough
 function splitCaption(caption) {
-    // First check for natural split points: ellipsis, period, or comma
+    // Check for natural split points: ellipsis or period (these always split)
     const splitPatterns = [
         /^(.+?\.\.\.)\s*(.+)$/,    // Split at ellipsis
         /^(.+?\.)\s+(.+)$/,         // Split at period
-        /^(.+?),\s+(.+)$/,          // Split at comma
     ];
 
     for (const pattern of splitPatterns) {
@@ -101,9 +100,14 @@ function splitCaption(caption) {
         }
     }
 
-    // No natural split point - split at middle word
+    // For shorter captions without natural breaks, keep on one line
+    if (caption.length < 28) {
+        return { top: '', bottom: caption };
+    }
+
+    // Longer captions - split at middle for meme effect
     const words = caption.split(' ');
-    if (words.length >= 2) {
+    if (words.length >= 4) {
         const midpoint = Math.ceil(words.length / 2);
         return {
             top: words.slice(0, midpoint).join(' '),
@@ -111,7 +115,7 @@ function splitCaption(caption) {
         };
     }
 
-    // Single word - put at bottom
+    // Default - keep on one line at bottom
     return { top: '', bottom: caption };
 }
 
