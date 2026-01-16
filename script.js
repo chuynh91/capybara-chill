@@ -87,8 +87,8 @@ function addToHistory(index, historyArray) {
 // Split caption into top and bottom parts for meme format
 // Only splits if caption is long enough to need two lines
 function splitCaption(caption) {
-    // Short captions (under 35 chars) - keep on one line at bottom
-    if (caption.length < 35) {
+    // Keep captions on one line unless very long (over 50 chars)
+    if (caption.length <= 50) {
         return { top: '', bottom: caption };
     }
 
