@@ -85,12 +85,13 @@ function addToHistory(index, historyArray) {
 }
 
 // Split caption into top and bottom parts for meme format
-// Splits at natural clause breaks (period, ellipsis, comma), otherwise keeps on one line
+// Always splits into two lines - top and bottom of image
 function splitCaption(caption) {
-    // Check for natural split points: period, ellipsis, or comma (multiple clauses)
+    // First check for natural split points: ellipsis, period, or comma
     const splitPatterns = [
-        /^(.+?\.\.\.)\s*(.+)$/,    // Split at ellipsis (e.g., "breathe in... breathe out...")
-        /^(.+?\.)\s+(.+)$/,         // Split at period (e.g., "no rush. no worries.")
+        /^(.+?\.\.\.)\s*(.+)$/,    // Split at ellipsis
+        /^(.+?\.)\s+(.+)$/,         // Split at period
+        /^(.+?),\s+(.+)$/,          // Split at comma
     ];
 
     for (const pattern of splitPatterns) {
@@ -100,7 +101,17 @@ function splitCaption(caption) {
         }
     }
 
-    // Single clause - keep on one line at bottom
+    // No natural split point - split at middle word
+    const words = caption.split(' ');
+    if (words.length >= 2) {
+        const midpoint = Math.ceil(words.length / 2);
+        return {
+            top: words.slice(0, midpoint).join(' '),
+            bottom: words.slice(midpoint).join(' ')
+        };
+    }
+
+    // Single word - put at bottom
     return { top: '', bottom: caption };
 }
 
