@@ -105,9 +105,27 @@ function splitCaption(caption) {
         return { top: '', bottom: caption };
     }
 
-    // Longer captions - split at middle for meme effect
+    // Longer captions - split at natural speech boundaries
     const words = caption.split(' ');
     if (words.length >= 4) {
+        // Look for natural split points - before pronouns/words that start new clauses
+        const clauseStarters = ['you', 'i', 'we', 'they', 'it', 'and', 'but', 'so', 'just', 'like', 'to'];
+
+        // Search for a good split point in the middle third of the sentence
+        const minIndex = Math.floor(words.length / 3);
+        const maxIndex = Math.ceil(words.length * 2 / 3);
+
+        for (let i = minIndex; i <= maxIndex; i++) {
+            const word = words[i].toLowerCase().replace(/[^a-z]/g, '');
+            if (clauseStarters.includes(word)) {
+                return {
+                    top: words.slice(0, i).join(' '),
+                    bottom: words.slice(i).join(' ')
+                };
+            }
+        }
+
+        // No natural break found - split at middle
         const midpoint = Math.ceil(words.length / 2);
         return {
             top: words.slice(0, midpoint).join(' '),
