@@ -85,18 +85,12 @@ function addToHistory(index, historyArray) {
 }
 
 // Split caption into top and bottom parts for meme format
-// Only splits if caption is long enough to need two lines
+// Splits at natural clause breaks (period, ellipsis, comma), otherwise keeps on one line
 function splitCaption(caption) {
-    // Keep captions on one line unless very long (over 50 chars)
-    if (caption.length <= 50) {
-        return { top: '', bottom: caption };
-    }
-
-    // For longer captions, check for natural split points: period, comma, or ellipsis
+    // Check for natural split points: period, ellipsis, or comma (multiple clauses)
     const splitPatterns = [
-        /^(.+?\.\.\.)\s*(.+)$/,    // Split at ellipsis
-        /^(.+?\.)\s+(.+)$/,         // Split at period
-        /^(.+?),\s+(.+)$/,          // Split at comma
+        /^(.+?\.\.\.)\s*(.+)$/,    // Split at ellipsis (e.g., "breathe in... breathe out...")
+        /^(.+?\.)\s+(.+)$/,         // Split at period (e.g., "no rush. no worries.")
     ];
 
     for (const pattern of splitPatterns) {
@@ -106,17 +100,7 @@ function splitCaption(caption) {
         }
     }
 
-    // No natural split point - split at middle word
-    const words = caption.split(' ');
-    if (words.length >= 4) {
-        const midpoint = Math.ceil(words.length / 2);
-        return {
-            top: words.slice(0, midpoint).join(' '),
-            bottom: words.slice(midpoint).join(' ')
-        };
-    }
-
-    // Fallback - just put at bottom
+    // Single clause - keep on one line at bottom
     return { top: '', bottom: caption };
 }
 
