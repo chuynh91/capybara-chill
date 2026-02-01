@@ -270,8 +270,16 @@ function summonCapybara() {
 const recentLunarImages = [];
 const recentLunarCaptions = [];
 
+// Check if user prefers reduced motion
+function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // Create subtle firecracker sparks behind the lunar button
 function createFirecrackerSparks() {
+    // Skip sparks if user prefers reduced motion
+    if (prefersReducedMotion()) return;
+
     const btn = document.getElementById('lunar-btn');
     const rect = btn.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -429,6 +437,12 @@ window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
         // Page was restored from bfcache, reset state
         isLoading = false;
+
+        // Ensure lunar button visibility is correct
+        const lunarBtn = document.getElementById('lunar-btn');
+        if (lunarBtn && isLunarNewYear()) {
+            lunarBtn.style.display = 'flex';
+        }
 
         const imageEl = document.getElementById('capybara-image');
         if (imageEl && imageEl.src) {

@@ -322,3 +322,19 @@ footer a:hover {
         font-size: 0.85rem;
     }
 }
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .image-container {
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #chill-btn.wiggle,
+    #lunar-btn.bounce {
+        animation: none;
+    }
+
+    .firecracker-spark {
+        display: none;
+    }
+}
