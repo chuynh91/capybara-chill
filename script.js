@@ -3,6 +3,43 @@
  * Inspired by calmingmanatee.xyz
  */
 
+// Valentine's Day captions (love poem style)
+const valentinesCaptions = [
+    "roses are red, violets are blue... capybaras are chill, and so are you",
+    "roses are red, the sky is above... you deserve rest, and plenty of love",
+    "roses are red, lakes are for floating... you're doing your best, and that's worth noting",
+    "roses are red, grass is for grazing... the way you keep going is honestly amazing",
+    "roses are red, naps are divine... take a deep breath, you're doing just fine",
+    "roses are red, sunsets are gold... your heart is warm, let it unfold",
+    "roses are red, rivers run deep... you deserve calm, and plenty of sleep",
+    "roses are red, mornings are hazy... self-love isn't selfish, so take it easy",
+    "roses are red, hot springs are nice... you don't need to be perfect, just being you will suffice",
+    "roses are red, oranges are sweet... you're already whole, you're already complete",
+    "roses are red, peace is a gift... sometimes the kindest thing is to let yourself drift",
+    "roses are red, clouds float on by... you're worthy of love, no need to ask why",
+    "roses are red, capybaras don't stress... you're doing enough, not more and not less",
+    "roses are red, the water is calm... you carry more strength than you know in your palm",
+    "roses are red, soft is the breeze... be gentle with yourself, do what you please",
+    "roses are red, the world can be tough... but you are resilient, you are enough",
+    "roses are red, stillness is healing... let yourself rest, embrace what you're feeling",
+    "roses are red, love takes its time... your pace is valid, your path is just fine",
+    "roses are red, hearts are for caring... start with your own, that's worth declaring",
+    "roses are red, this much is true... no one else out there is quite like you"
+];
+
+// Valentine's Day capybara images
+const valentinesImages = [
+    "images/valentine-1.png",
+    "images/valentine-2.png",
+    "images/valentine-3.png",
+    "images/valentine-4.png",
+    "images/valentine-5.png",
+    "images/valentine-6.png",
+    "images/valentine-7.png",
+    "images/valentine-8.png",
+    "images/valentine-9.png"
+];
+
 // Lunar New Year captions (Year of the Horse 2026)
 const lunarNewYearCaptions = [
     "happy lunar new year, friend",
@@ -89,6 +126,20 @@ const lunarNewYearImages = [
 // Lunar New Year 2026: February 17 (Year of the Horse)
 // Extended celebration: Jan 31 - Feb 28
 function isLunarNewYear() {
+    const now = new Date();
+    const month = now.getMonth(); // 0-indexed (January = 0, February = 1)
+    const day = now.getDate();
+
+    // January 31 or any day in February up to the 28th
+    if ((month === 0 && day === 31) || (month === 1 && day <= 28)) {
+        return true;
+    }
+    return false;
+}
+
+// Check if current date is within Valentine's Day period
+// Same as Lunar New Year: Jan 31 - Feb 28
+function isValentinesDay() {
     const now = new Date();
     const month = now.getMonth(); // 0-indexed (January = 0, February = 1)
     const day = now.getDate();
@@ -201,6 +252,13 @@ function summonCapybara() {
     const captionBottom = document.getElementById('caption-bottom');
     const container = document.querySelector('.image-container');
     const button = document.getElementById('chill-btn');
+    const valentineContainer = document.getElementById('valentine-container');
+
+    // Switch back to regular layout if valentine was showing
+    if (valentineContainer) {
+        valentineContainer.classList.remove('active', 'loaded');
+    }
+    container.style.display = 'flex';
 
     // Add button wiggle
     button.classList.add('wiggle');
@@ -270,6 +328,10 @@ function summonCapybara() {
 const recentLunarImages = [];
 const recentLunarCaptions = [];
 
+// Track recently shown valentines content
+const recentValentinesImages = [];
+const recentValentinesCaptions = [];
+
 // Check if user prefers reduced motion
 function prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -326,6 +388,13 @@ function summonLunarNewYear() {
     const captionBottom = document.getElementById('caption-bottom');
     const container = document.querySelector('.image-container');
     const envelopeBtn = document.getElementById('lunar-btn');
+    const valentineContainer = document.getElementById('valentine-container');
+
+    // Switch back to regular layout if valentine was showing
+    if (valentineContainer) {
+        valentineContainer.classList.remove('active', 'loaded');
+    }
+    container.style.display = 'flex';
 
     // Add bounce animation to the envelope
     envelopeBtn.classList.add('bounce');
@@ -394,12 +463,141 @@ function summonLunarNewYear() {
     }, 800); // Wait for bounce + fade out
 }
 
+// Create floating hearts behind the valentine button
+function createHeartSparkles() {
+    // Skip if user prefers reduced motion
+    if (prefersReducedMotion()) return;
+
+    const btn = document.getElementById('valentine-btn');
+    const rect = btn.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Create 6-10 small hearts
+    const heartCount = 6 + Math.floor(Math.random() * 5);
+
+    for (let i = 0; i < heartCount; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-sparkle';
+        heart.textContent = '♥';
+
+        // Random angle and distance
+        const angle = (Math.PI * 2 * i) / heartCount + (Math.random() - 0.5) * 0.5;
+        const distance = 25 + Math.random() * 30;
+        const endX = Math.cos(angle) * distance;
+        const endY = Math.sin(angle) * distance - 20; // Bias upward
+
+        // Random pink/red color
+        const colors = ['#ff69b4', '#ff1493', '#ff6b9d', '#e75480', '#ff85a2'];
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+
+        // Position at button center
+        heart.style.left = centerX + 'px';
+        heart.style.top = centerY + 'px';
+        heart.style.setProperty('--end-x', endX + 'px');
+        heart.style.setProperty('--end-y', endY + 'px');
+
+        document.body.appendChild(heart);
+
+        // Remove after animation
+        setTimeout(() => heart.remove(), 700);
+    }
+}
+
+// Summon a Valentine's Day capybara (easter egg)
+function summonValentines() {
+    // Prevent rapid clicking - ignore if already loading
+    if (isLoading) return;
+    isLoading = true;
+
+    const regularContainer = document.querySelector('.image-container');
+    const valentineContainer = document.getElementById('valentine-container');
+    const valentineImage = document.getElementById('valentine-image');
+    const valentinePoem = document.getElementById('valentine-poem');
+    const heartBtn = document.getElementById('valentine-btn');
+
+    // Add pulse animation to the heart
+    heartBtn.classList.add('pulse');
+    setTimeout(() => heartBtn.classList.remove('pulse'), 600);
+
+    // Trigger heart sparkles
+    createHeartSparkles();
+
+    // Hide regular container, show valentine container
+    regularContainer.classList.remove('loaded');
+    regularContainer.style.display = 'none';
+    valentineContainer.classList.add('active');
+    valentineContainer.classList.remove('loaded');
+
+    // Get random valentine image and caption
+    const imageIndex = getRandomIndex(valentinesImages, recentValentinesImages);
+    const captionIndex = getRandomIndex(valentinesCaptions, recentValentinesCaptions);
+
+    // Add to history
+    addToHistory(imageIndex, recentValentinesImages);
+    addToHistory(captionIndex, recentValentinesCaptions);
+
+    // Format the poem with line breaks (split at commas and ellipsis)
+    function formatPoem(caption) {
+        return caption
+            .replace(/,\s*/g, ',<br>')
+            .replace(/\.\.\.\s*/g, '...<br>');
+    }
+
+    // Helper to show the loaded content
+    function showContent(imgSrc) {
+        valentineImage.src = imgSrc;
+        valentinePoem.innerHTML = formatPoem(valentinesCaptions[captionIndex]);
+
+        // Force browser reflow
+        void valentineContainer.offsetHeight;
+
+        // Fade in
+        setTimeout(() => {
+            valentineContainer.classList.add('loaded');
+            isLoading = false;
+        }, 50);
+    }
+
+    // Wait for fade out before loading new image
+    setTimeout(() => {
+        const newImage = new Image();
+        let loadTimedOut = false;
+
+        const loadTimeout = setTimeout(() => {
+            loadTimedOut = true;
+            console.warn('Valentine image load timed out, using fallback');
+            showContent(`https://placehold.co/280x280/ff69b4/ffffff?text=💝`);
+        }, 8000);
+
+        newImage.onload = function() {
+            if (loadTimedOut) return;
+            clearTimeout(loadTimeout);
+            showContent(this.src);
+        };
+
+        newImage.onerror = function() {
+            if (loadTimedOut) return;
+            clearTimeout(loadTimeout);
+            console.warn('Valentine image failed to load, using fallback');
+            showContent(`https://placehold.co/280x280/ff69b4/ffffff?text=💝`);
+        };
+
+        newImage.src = valentinesImages[imageIndex];
+    }, 500);
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    // Show/hide lunar new year button based on date
+    // Show/hide seasonal buttons based on date
     const lunarBtn = document.getElementById('lunar-btn');
     if (lunarBtn && isLunarNewYear()) {
         lunarBtn.style.display = 'flex';
+    }
+
+    const valentineBtn = document.getElementById('valentine-btn');
+    if (valentineBtn && isValentinesDay()) {
+        valentineBtn.style.display = 'flex';
     }
 
     summonCapybara();
@@ -421,13 +619,23 @@ document.addEventListener('visibilitychange', () => {
         // Reset loading state in case it got stuck
         isLoading = false;
 
-        // Ensure image is still loaded (mobile browsers may unload resources)
+        // Ensure regular image is still loaded (mobile browsers may unload resources)
         const imageEl = document.getElementById('capybara-image');
         if (imageEl && imageEl.src && (imageEl.naturalWidth === 0 || !imageEl.complete)) {
             // Image was unloaded, reload it
             const src = imageEl.src;
             imageEl.src = '';
             imageEl.src = src;
+        }
+
+        // Also check valentine image if it's visible
+        const valentineContainer = document.getElementById('valentine-container');
+        const valentineImage = document.getElementById('valentine-image');
+        if (valentineContainer && valentineContainer.classList.contains('active') &&
+            valentineImage && valentineImage.src && (valentineImage.naturalWidth === 0 || !valentineImage.complete)) {
+            const src = valentineImage.src;
+            valentineImage.src = '';
+            valentineImage.src = src;
         }
     }
 });
@@ -438,17 +646,33 @@ window.addEventListener('pageshow', (event) => {
         // Page was restored from bfcache, reset state
         isLoading = false;
 
-        // Ensure lunar button visibility is correct
+        // Ensure seasonal button visibility is correct
         const lunarBtn = document.getElementById('lunar-btn');
         if (lunarBtn && isLunarNewYear()) {
             lunarBtn.style.display = 'flex';
         }
 
+        const valentineBtn = document.getElementById('valentine-btn');
+        if (valentineBtn && isValentinesDay()) {
+            valentineBtn.style.display = 'flex';
+        }
+
+        // Reload regular image if visible
         const imageEl = document.getElementById('capybara-image');
         if (imageEl && imageEl.src) {
             const src = imageEl.src;
             imageEl.src = '';
             imageEl.src = src;
+        }
+
+        // Reload valentine image if visible
+        const valentineContainer = document.getElementById('valentine-container');
+        const valentineImage = document.getElementById('valentine-image');
+        if (valentineContainer && valentineContainer.classList.contains('active') &&
+            valentineImage && valentineImage.src) {
+            const src = valentineImage.src;
+            valentineImage.src = '';
+            valentineImage.src = src;
         }
     }
 });
